@@ -1,0 +1,205 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>formalistic</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">formalistic</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1> formalistic</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<h1 id="formalistic-nbsp-npm-version-npm-image-npm-url-build-status-travis-image-travis-url-coveralls-status-coveralls-image-coveralls-url-downloads-downloads-image-npm-url-">formalistic &nbsp; <a href="https://npmjs.org/package/formalistic"><img src="http://img.shields.io/npm/v/formalistic.svg" alt="NPM version"></a> <a href="https://travis-ci.org/bripkens/formalistic"><img src="http://img.shields.io/travis/bripkens/formalistic.svg" alt="Build Status"></a> <a href="https://coveralls.io/r/bripkens/formalistic"><img src="http://img.shields.io/coveralls/bripkens/formalistic/master.svg" alt="Coveralls Status"></a> <a href="https://npmjs.org/package/formalistic"><img src="http://img.shields.io/npm/dm/formalistic.svg" alt="Downloads"></a></h1>
+				<p>Model your form as an immutable data tree with validators and an explicit dirty/pristine state.</p>
+				<p><strong><a href="#installation">Installation</a> |</strong>
+					<strong><a href="#usage">Usage</a> |</strong>
+					<strong><a href="formalistic.d.ts">API</a> |</strong>
+					<strong><a href="CHANGELOG.md">Changelog</a> |</strong>
+				<strong><a href="example">Example Projects</a></strong></p>
+				<hr>
+				<p>Handling form state can be a pain. For this very reason, very many form libraries exist. Often times, these libraries are specific to one framework or the other, e.g. redux forms or Angular&#39;s form controllers. Other times, they constrain design choices by enforcing certain state management systems or custom components. This doesn&#39;t need to be the case.</p>
+				<p>With formalistic, you can model the conceptual idea of the form. Now, this sounds way more fancy than it actually is. Try to think about it this way: Look at the fields, how they are validated and how they structured and related. Remove the overhead of frameworks and components and model this with plain JavaScript. Turns out, when doing it this way, they are often pretty simple to reason about!</p>
+				<h2 id="installation">Installation</h2>
+				<pre><code>npm <span class="hljs-keyword">install</span> <span class="hljs-comment">--save formalistic</span>
+</code></pre><h2 id="usage">Usage</h2>
+				<p>Formalistic is about modeling forms using plain JavaScript. The following example shows how this can be done for a simple login form.</p>
+				<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> {createField, createMapForm, notBlankValidator} <span class="hljs-keyword">from</span> <span class="hljs-string">'formalized'</span>;
+
+<span class="hljs-keyword">const</span> emailField = createField({
+  <span class="hljs-attr">value</span>: <span class="hljs-string">''</span>,
+  validator(value) {
+    <span class="hljs-keyword">if</span> (isEmail(value)) {
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
+    }
+
+    <span class="hljs-keyword">return</span> [{
+      <span class="hljs-attr">severity</span>: <span class="hljs-string">'error'</span>,
+      <span class="hljs-attr">message</span>: <span class="hljs-string">'Please provide a valid email address.'</span>
+    }];
+  }
+});
+
+<span class="hljs-keyword">const</span> passwordField = createField({
+  <span class="hljs-attr">value</span>: <span class="hljs-string">''</span>,
+  <span class="hljs-attr">validator</span>: notBlankValidator
+});
+
+<span class="hljs-keyword">const</span> form = createMapForm()
+    .put(<span class="hljs-string">'email'</span>, emailField)
+    .put(<span class="hljs-string">'password'</span>, passwordField)
+</code></pre>
+				<p>Forms are immutable and all interaction with forms, e.g. setting values on fields, will recreate the form. For instance, to update the value of the email field:</p>
+				<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> updatedForm = form.updateIn([<span class="hljs-string">'email'</span>], field =&gt;
+  field.setValue(<span class="hljs-string">'tom.mason@example.com'</span>)
+);
+</code></pre>
+				<p>More details are available in the <a href="formalistic.d.ts">API documentation</a> and the <a href="example">example apps</a></p>
+				<h2 id="why-yet-another-library-">Why yet another library?</h2>
+				<p>There is an unfortunately large amount of form libraries. I wasn&#39;t satisfied with the options available and I found that many of those made too many assumptions or imposed unnecessarily large restrictions. Here are a few bullet points which have driven the design of formalistic.</p>
+				<ul>
+					<li>Do not dictate a framework, library or state management system.</li>
+					<li>Be interoperable and allow extensions for easier use with certain libraries.</li>
+					<li>Support different UX patterns, e.g. mark fields as dirty on change or mark fields as dirty on focus.</li>
+					<li>Support cross field validation.</li>
+					<li>Support efficient change detection for view and/or model diffing systems.</li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_formalistic_d_.html">"formalistic.d"</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>
